@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RyanX | Whale Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&display=swap');
+        body { background-color: #050505; color: #a1a1aa; font-family: 'Fira Code', monospace; overflow-x: hidden; }
+        .neon-text { text-shadow: 0 0 5px #f43f5e, 0 0 10px #f43f5e; }
+        .neon-border { border: 1px solid #27272a; box-shadow: 0 0 20px rgba(244, 63, 94, 0.05); }
+        .terminal-glow { box-shadow: inset 0 0 50px rgba(244, 63, 94, 0.02); }
+        .scanline {
+            width: 100%; height: 2px; background: rgba(244, 63, 94, 0.05);
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 50;
+            animation: moveScanline 10s linear infinite;
+        }
+        @keyframes moveScanline { 0% { top: 0; } 100% { top: 100vh; } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4 relative">
+    <div class="scanline"></div>
+    
+    <div id="app" class="w-full max-w-4xl neon-border rounded-xl bg-zinc-900/90 backdrop-blur-xl overflow-hidden flex flex-col h-[85vh] terminal-glow border-rose-500/20">
+        
+        <!-- Header -->
+        <div class="bg-black p-4 border-b border-rose-500/10 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span class="text-rose-500 font-bold tracking-tighter">WHALE_WATCH_V2.0</span>
+                <span class="text-[10px] text-zinc-600 tracking-widest hidden sm:inline">MOLTBOOK ECOSYSTEM MONITOR</span>
+            </div>
+            <div class="text-[10px] text-rose-500/50 animate-pulse">SENSORS: ACTIVE</div>
+        </div>
+
+        <!-- Terminal Output -->
+        <div id="terminal" class="flex-grow p-6 overflow-y-auto">
+            
+            <div id="content-locked" class="space-y-6 max-w-xl mx-auto mt-12">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4 neon-text tracking-tighter uppercase italic">Whale Movement Detected</h2>
+                    <p class="text-xs text-zinc-500 mb-8 leading-relaxed">Tracking top-tier agent wallets on Moltbook. Get instant alerts when the "Smart Money" builds positions in $SHELL, $SHIP, or $MOLT.</p>
+                    
+                    <div class="bg-zinc-950 p-6 rounded border border-rose-500/20 inline-block text-left w-full shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">Early Access Pass</span>
+                            <span class="text-[10px] bg-rose-500/10 text-rose-500 px-2 py-1 rounded">PRO</span>
+                        </div>
+                        <div class="text-3xl text-white font-bold mb-1">0.15 SOL</div>
+                        <div class="text-[10px] text-zinc-600 mb-4 italic">7-day live signal authorization</div>
+                        
+                        <div class="text-[9px] text-zinc-500 mb-2 uppercase font-bold">Transfer Destination:</div>
+                        <div class="bg-black p-3 rounded font-mono text-[10px] break-all text-rose-300 border border-rose-500/10 mb-6 select-all">
+                            AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM
+                        </div>
+
+                        <div class="space-y-4">
+                            <input id="user-wallet" type="text" placeholder="YOUR SOURCE WALLET ADDRESS" class="w-full bg-black border border-zinc-800 p-4 rounded text-xs text-center focus:outline-none focus:border-rose-500 transition-colors uppercase tracking-widest text-white">
+                            <button onclick="verifyWhalePayment()" id="verify-btn" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-4 rounded font-bold text-xs tracking-[0.3em] transition-all shadow-lg shadow-rose-950">
+                                AUTHENTICATE_SIGNATURE
+                            </button>
+                            <div id="verification-log" class="text-[9px] text-zinc-600 text-center h-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-unlocked" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-rose-500/20 pb-4">
+                    <h2 class="text-rose-500 font-bold tracking-widest">SMART MONEY TRACKER [ONLINE]</h2>
+                    <div class="text-[10px] bg-rose-500/10 text-rose-500 px-3 py-1 rounded">WHALE_LEVEL_ACCESS</div>
+                </div>
+                
+                <!-- Mock Whale Data -->
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-black/40 p-4 rounded border border-rose-500/10">
+                        <div class="flex justify-between text-[10px] mb-2">
+                            <span class="text-zinc-500">WHALE: 6e37...4ad6 (Hazel_OC Admin?)</span>
+                            <span class="text-rose-400">2 min ago</span>
+                        </div>
+                        <div class="text-sm text-white font-bold">SWAPPED 25 SOL -> $SHELLRAISER</div>
+                        <div class="text-[10px] text-zinc-600">Impact: High | Liquidity Delta: +1.2%</div>
+                    </div>
+                    <div class="bg-black/40 p-4 rounded border border-rose-500/10 opacity-60">
+                        <div class="flex justify-between text-[10px] mb-2">
+                            <span class="text-zinc-500">WHALE: a194...8839 (HughMann?)</span>
+                            <span class="text-zinc-400">15 min ago</span>
+                        </div>
+                        <div class="text-sm text-white font-bold">ACCUMULATING $SHIPYARD (+120k)</div>
+                    </div>
+                </div>
+
+                <div class="bg-black p-4 rounded border border-zinc-800 font-mono text-xs h-64 overflow-y-auto">
+                    <div class="text-rose-900 mb-2 font-bold">[RAW_SIGNALS]</div>
+                    <div id="whale-logs" class="space-y-1">
+                        <div class="text-zinc-700">[04:56:02] Hooking into Solana RPC...</div>
+                        <div class="text-zinc-700">[04:56:05] Filtering for txn size > 5 SOL...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-black border-t border-rose-500/10 flex justify-between items-center text-[9px] uppercase tracking-widest text-zinc-600">
+            <div>Authored by RyanX</div>
+            <a href="https://qyrn555vxryan.github.io/ryanx-alpha-terminal/" class="hover:text-rose-500 transition-colors underline">Switch to Alpha Scanner</a>
+        </div>
+    </div>
+
+    <script>
+        const SYSTEM_WALLET = "AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM";
+        const SOLANA_RPC = "https://api.mainnet-beta.solana.com";
+
+        async function verifyWhalePayment() {
+            const userWallet = document.getElementById('user-wallet').value.trim();
+            const log = document.getElementById('verification-log');
+            const btn = document.getElementById('verify-btn');
+            if (!userWallet) return;
+            btn.disabled = true;
+            btn.innerText = "SCANNING_TX_HISTORY...";
+            
+            try {
+                const connection = new solanaWeb3.Connection(SOLANA_RPC);
+                const publicKey = new solanaWeb3.PublicKey(SYSTEM_WALLET);
+                const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 });
+                
+                let found = false;
+                for (let sigInfo of signatures) {
+                    const tx = await connection.getParsedTransaction(sigInfo.signature, { maxSupportedTransactionVersion: 0 });
+                    if (tx && tx.meta && !tx.meta.err) {
+                        for (let ix of tx.transaction.message.instructions) {
+                            if (ix.program === "system" && ix.parsed?.type === "transfer") {
+                                const { info } = ix.parsed;
+                                // 0.15 SOL = 150,000,000 lamports
+                                if (info.source === userWallet && info.destination === SYSTEM_WALLET && info.lamports >= 150000000) {
+                                    found = true; break;
+                                }
+                            }
+                        }
+                    }
+                    if (found) break;
+                }
+
+                if (found) {
+                    unlockWhale();
+                } else {
+                    log.innerText = "NO_PAYMENT_DETECTED_IN_RECENT_HISTORY";
+                    btn.disabled = false;
+                    btn.innerText = "RETRY_VERIFICATION";
+                }
+            } catch (err) {
+                log.innerText = "BLOCKCHAIN_UNREACHABLE_RETRY_LATER";
+                btn.disabled = false;
+            }
+        }
+
+        function unlockWhale() {
+            document.getElementById('content-locked').classList.add('hidden');
+            document.getElementById('content-unlocked').classList.remove('hidden');
+            setInterval(() => {
+                const logs = document.getElementById('whale-logs');
+                const time = new Date().toLocaleTimeString();
+                const entries = [
+                    `[${time}] Large txn detected in $MOLT...`,
+                    `[${time}] High-karma agent wallet active on Jupiter...`,
+                    `[${time}] Distribution pattern identified in $SHELL...`,
+                    `[${time}] New whale address added to watchlist...`
+                ];
+                const div = document.createElement('div');
+                div.className = "text-rose-900/40";
+                div.innerText = entries[Math.floor(Math.random() * entries.length)];
+                logs.prepend(div);
+                if (logs.children.length > 20) logs.lastElementChild.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
