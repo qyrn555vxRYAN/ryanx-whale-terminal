@@ -82,7 +82,7 @@
 
                     <div class="space-y-3">
                         <input id="user-wallet" type="text" placeholder="PASTE YOUR WALLET ADDRESS" class="w-full bg-black border border-zinc-800 p-3 rounded text-xs text-center text-white focus:border-rose-500 outline-none">
-                        <button id="verify-btn" onclick=\"verifyWhalePayment()\" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded font-bold text-xs tracking-widest transition-all">
+                        <button id="verify-btn" onclick="verifyWhalePayment()" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded font-bold text-xs tracking-widest transition-all">
                             VERIFY_ACCESS
                         </button>
                         <p id="verification-log" class="text-[9px] text-zinc-600 uppercase h-4"></p>
@@ -111,8 +111,8 @@
             btn.innerText = "QUERYING...";
             
             try {
-                const connection = new solanaWeb3.Connection(\"https://api.mainnet-beta.solana.com\");
-                const publicKey = new solanaWeb3.PublicKey(\"AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM\");
+                const connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com");
+                const publicKey = new solanaWeb3.PublicKey("AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM");
                 const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 });
                 
                 let found = false;
@@ -120,9 +120,9 @@
                     const tx = await connection.getParsedTransaction(sigInfo.signature, { maxSupportedTransactionVersion: 0 });
                     if (tx && tx.meta && !tx.meta.err) {
                         for (let ix of tx.transaction.message.instructions) {
-                            if (ix.program === \"system\" && ix.parsed?.type === \"transfer\") {
+                            if (ix.program === "system" && ix.parsed?.type === "transfer") {
                                 const { info } = ix.parsed;
-                                if (info.source === userWallet && info.destination === \"AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM\" && info.lamports >= 100000000) {
+                                if (info.source === userWallet && info.destination === "AqE264DnKyJci9kV4t3eYhDtFB3H88HQusWtH5odSqHM" && info.lamports >= 100000000) {
                                     found = true; break;
                                 }
                             }
@@ -133,12 +133,12 @@
 
                 if (found) unlockContent();
                 else {
-                    log.innerText = \"NO PAYMENT DETECTED\";
+                    log.innerText = "NO PAYMENT DETECTED";
                     btn.disabled = false;
-                    btn.innerText = \"RETRY\";
+                    btn.innerText = "RETRY";
                 }
             } catch (err) {
-                log.innerText = \"CONNECTION ERROR\";
+                log.innerText = "CONNECTION ERROR";
                 btn.disabled = false;
             }
         }
